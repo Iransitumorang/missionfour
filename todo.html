@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Ran</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .profile-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .time-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .input-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .list-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .priority-low {
+            border-left: 5px solid #28a745;
+        }
+        .priority-medium {
+            border-left: 5px solid #ffc107;
+        }
+        .priority-high {
+            border-left: 5px solid #dc3545;
+        }
+        .priority-overdue {
+            border-left: 5px solid #6c757d;
+            background-color: #f8f9fa;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-content {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        .task-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .priority-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-right: 5px;
+        }
+        .badge-low {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .badge-overdue {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-card">
+                    <h3>Profile</h3>
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-user-circle fa-3x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 id="user-name">Iran Situmorang</h5>
+                            <p class="text-muted" id="user-position">Frontend Developer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="time-card">
+                    <h3>Time</h3>
+                    <div id="current-time" class="display-6"></div>
+                    <div id="current-date" class="text-muted"></div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="input-card">
+                    <h3>Add New Task</h3>
+                    <form id="task-form">
+                        <div class="mb-3">
+                            <label for="task-input" class="form-label">Task Description</label>
+                            <textarea class="form-control" id="task-input" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority Level</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="priority" id="priority-low" autocomplete="off" value="low" checked>
+                                <label class="btn btn-outline-success" for="priority-low">Low</label>
+                                
+                                <input type="radio" class="btn-check" name="priority" id="priority-medium" autocomplete="off" value="medium">
+                                <label class="btn btn-outline-warning" for="priority-medium">Medium</label>
+                                
+                                <input type="radio" class="btn-check" name="priority" id="priority-high" autocomplete="off" value="high">
+                                <label class="btn btn-outline-danger" for="priority-high">High</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Add Task
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="list-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>To-Do List</h3>
+                        <button id="delete-all" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash me-1"></i>Delete All
+                        </button>
+                    </div>
+                    
+                    <ul id="todo-list" class="list-unstyled"></ul>
+                </div>
+                
+                <div class="list-card">
+                    <h3 class="mb-3">Completed Tasks</h3>
+                    <ul id="done-list" class="list-unstyled"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            
+            // DOM elements
+            const taskForm = document.getElementById('task-form');
+            const taskInput = document.getElementById('task-input');
+            const todoList = document.getElementById('todo-list');
+            const doneList = document.getElementById('done-list');
+            const deleteAllBtn = document.getElementById('delete-all');
+            const currentTime = document.getElementById('current-time');
+            const currentDate = document.getElementById('current-date');
+            
+            // Update time and date
+            function updateDateTime() {
+                const now = new Date();
+                const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                
+                currentTime.textContent = now.toLocaleTimeString(undefined, timeOptions);
+                currentDate.textContent = now.toLocaleDateString(undefined, dateOptions);
+            }
+            
+            // Update every second
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            // Render tasks
+            function renderTasks() {
+                todoList.innerHTML = '';
+                doneList.innerHTML = '';
+                
+                const now = new Date();
+                
+                tasks.forEach((task, index) => {
+                    const li = document.createElement('li');
+                    li.className = `task-item ${getPriorityClass(task.priority)} ${task.overdue ? 'priority-overdue' : ''}`;
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'form-check-input';
+                    checkbox.checked = task.completed;
+                    checkbox.addEventListener('change', () => toggleTask(index));
+                    
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'task-content';
+                    
+                    const priorityBadge = document.createElement('span');
+                    priorityBadge.className = `priority-badge ${getPriorityBadgeClass(task.priority)}`;
+                    priorityBadge.textContent = task.priority.toUpperCase();
+                    
+                    const taskText = document.createElement('span');
+                    taskText.className = task.completed ? 'completed' : '';
+                    taskText.textContent = task.text;
+                    
+                    const dateSpan = document.createElement('div');
+                    dateSpan.className = 'task-date';
+                    dateSpan.textContent = `Added: ${formatDate(task.dateAdded)}`;
+                    
+                    if (task.completed) {
+                        dateSpan.textContent += ` | Completed: ${formatDate(task.dateCompleted)}`;
+                    } else if (task.dueDate) {
+                        dateSpan.textContent += ` | Due: ${formatDate(task.dueDate)}`;
+                        
+                        // Check if task is overdue
+                        if (new Date(task.dueDate) < now && !task.completed) {
+                            task.overdue = true;
+                            li.classList.add('priority-overdue');
+                        }
+                    }
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-sm btn-outline-danger';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteTask(index);
+                    });
+                    
+                    contentDiv.appendChild(priorityBadge);
+                    contentDiv.appendChild(taskText);
+                    contentDiv.appendChild(dateSpan);
+                    
+                    li.appendChild(checkbox);
+                    li.appendChild(contentDiv);
+                    li.appendChild(deleteBtn);
+                    
+                    if (task.completed) {
+                        doneList.appendChild(li);
+                    } else {
+                        todoList.appendChild(li);
+                    }
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+            
+            // Helper functions
+            function getPriorityClass(priority) {
+                return `priority-${priority}`;
+            }
+            
+            function getPriorityBadgeClass(priority) {
+                return `badge-${priority}`;
+            }
+            
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            
+            // Task functions
+            function addTask(text, priority) {
+                const now = new Date();
+                const dueDate = new Date();
+                
+                // Set due date based on priority
+                switch(priority) {
+                    case 'high':
+                        dueDate.setDate(now.getDate() + 1); // 1 day for high priority
+                        break;
+                    case 'medium':
+                        dueDate.setDate(now.getDate() + 3); // 3 days for medium priority
+                        break;
+                    case 'low':
+                        dueDate.setDate(now.getDate() + 7); // 7 days for low priority
+                        break;
+                }
+                
+                tasks.push({
+                    text,
+                    priority,
+                    completed: false,
+                    dateAdded: now.toISOString(),
+                    dueDate: dueDate.toISOString(),
+                    overdue: false
+                });
+                
+                renderTasks();
+            }
+            
+            function toggleTask(index) {
+                tasks[index].completed = !tasks[index].completed;
+                
+                if (tasks[index].completed) {
+                    tasks[index].dateCompleted = new Date().toISOString();
+                } else {
+                    tasks[index].dateCompleted = null;
+                }
+                
+                renderTasks();
+            }
+            
+            function deleteTask(index) {
+                tasks.splice(index, 1);
+                renderTasks();
+            }
+            
+            function deleteAllTasks() {
+                if (confirm('Are you sure you want to delete all tasks?')) {
+                    tasks = [];
+                    renderTasks();
+                }
+            }
+            
+            // Event listeners
+            taskForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const text = taskInput.value.trim();
+                const priority = document.querySelector('input[name="priority"]:checked').value;
+                
+                if (text) {
+                    addTask(text, priority);
+                    taskInput.value = '';
+                }
+            });
+            
+            deleteAllBtn.addEventListener('click', deleteAllTasks);
+            
+            // Initial render
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
